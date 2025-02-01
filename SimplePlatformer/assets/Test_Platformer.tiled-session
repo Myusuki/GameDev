@@ -1,0 +1,60 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Gameboy.tsx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "GameBoyTest.tmx": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1282.1666666666665,
+                "y": 982.8333333333333
+            }
+        },
+        "Gameboy.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 4
+        },
+        "beach_tileset.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "island.tmx": {
+            "scale": 0.3112068965517241,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 976.8421052631579,
+                "y": 493.24099722991696
+            }
+        }
+    },
+    "last.imagePath": "/home/myu/Gitdownloads/coding-adventure/GameDev/SimplePlatformer/assets",
+    "map.height": 100,
+    "map.lastUsedFormat": "tmx",
+    "map.renderOrder": "2",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 100,
+    "openFiles": [
+        "GameBoyTest.tmx",
+        "Gameboy.tsx"
+    ],
+    "project": "Test_Platformer.tiled-project",
+    "recentFiles": [
+        "GameBoyTest.tmx",
+        "Gameboy.tsx",
+        "island.tmx",
+        "beach_tileset.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
