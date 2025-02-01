@@ -132,7 +132,6 @@ SDLPlayground/Tutorial/L8GeometryRendering/L8
 SDLPlayground/Tutorial/L9ViewPort/09_the_viewport.zip
 SDLPlayground/Tutorial/L9ViewPort/09_the_viewport/
 SDLPlayground/Tutorial/L9ViewPort/L9
-TiledPlayground/BoundedCameraViewing/app
 TiledPlayground/MapRendererFromScratch/MapRenderer
 TiledPlayground/MapRendererFromScratch/assets/Game Boy Character - Fluffy.zip
 TiledPlayground/.gitignore
@@ -140,3 +139,4 @@ TiledPlayground/Test
 TiledPlayground/assets/Game\ Boy\ Character\ -\ Fluffy.zip
 TiledPlayground/tmx_1.10.0-linux.zip
 TiledPlayground/tmx_1.10.0/*
+app
