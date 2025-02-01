@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="left-down" width="7" height="7" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="CaveRuinsTilesheet.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="7" height="7">
+  <data encoding="csv">
+4,4,4,4,4,4,4,
+4,1,2,2,2,3,4,
+4,5,6,6,6,7,4,
+4,5,6,6,6,7,4,
+4,5,6,6,6,7,4,
+4,9,10,10,10,11,4,
+4,4,4,4,4,4,4
+</data>
+ </layer>
+</map>

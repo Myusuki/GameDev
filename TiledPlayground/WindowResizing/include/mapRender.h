@@ -1,0 +1,17 @@
+#ifndef MAPRENDER_H
+#define MAPRENDER_H
+
+#include <raylib.h>
+#include <tmx.h>
+
+// map render functions
+// main render function
+void RenderMap( tmx_map *map );
+// convert background color to raylib color
+Color IntToColor( int color );
+// draw tile layers
+void DrawTileLayer( tmx_map *map, tmx_layer *layer );
+// draw tiles
+void DrawTile( void *image, Rectangle sourceRect, Vector2 destPos, float opacity, unsigned int flags );
+
+#endif
