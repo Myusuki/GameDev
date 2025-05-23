@@ -37,12 +37,7 @@ void DrawTile( void *image, Rectangle sourceRect, Vector2 destPos, float opacity
 }
 void DrawTileCollision( tmx_tile *tile, Vector2 destPos )
 {
-  int x = destPos.x; 
-  int y = destPos.y;
-  unsigned int w = tile->width;
-  unsigned int h = tile->height;
-  
-  Rectangle destRect= { .x = x, .y = y, .width = w, .height = h };
+  Rectangle destRect= { .x = destPos.x, .y = destPos.y, .width = tile->width, .height = tile->height };
 
   if( tile->collision )
     DrawRectangleRec(destRect, (Color){ 0, 255, 242, 107 } );
@@ -58,7 +53,7 @@ void DrawTileLayer( tmx_map *map, tmx_layer *layer )
   {
     for( unsigned long columns = 0; columns < map->height; columns++ )
     {
-      unsigned int gid = ( layer->content.gids[ (columns * map->width) + rows] ) &TMX_FLIP_BITS_REMOVAL;
+      unsigned int gid = ( layer->content.gids[ (columns * map->width) + rows] ) & TMX_FLIP_BITS_REMOVAL;
       tmx_tile *tile = map->tiles[gid];
 
       if( tile != NULL )
@@ -70,12 +65,13 @@ void DrawTileLayer( tmx_map *map, tmx_layer *layer )
         unsigned int w = tileset->tile_width;
         unsigned int h = tileset->tile_height;
 
+        // set tile image
         if( image )
           imagePtr = image->resource_image;
         else
           imagePtr = tileset->image->resource_image;
 
-        unsigned int flags = ( layer->content.gids[ (columns * map->width) + rows ]) & ~TMX_FLIP_BITS_REMOVAL;
+        unsigned int flags = ( layer->content.gids[ (columns * map->width) + rows ] ) & ~TMX_FLIP_BITS_REMOVAL;
 
         Rectangle sourceRectangle = { .x = x, .y = y, .width = w, .height = h };
         Vector2 destPosition = (Vector2){ rows * tileset->tile_width, columns * tileset->tile_height };
@@ -84,7 +80,6 @@ void DrawTileLayer( tmx_map *map, tmx_layer *layer )
         }
     }
   }
-
 }
 
 void* RaylibTexLoad( const char *path )
