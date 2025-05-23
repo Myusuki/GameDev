@@ -4,17 +4,17 @@
 #include <stdbool.h>
 #include <raylib.h>
 #include <tmx.h>
-#include "levelEntrance.h"
+#include "collisionObject.h"
 
 // structs
-typedef struct Player
+typedef struct
 {
   Vector2 position;
   Rectangle hurtbox;
   Vector2 speed;
 } Player;
 
-void UpdatePlayer( tmx_map *map, Camera2D *camera, Player *player, CollisionObj *collisionList, Vector2 screenDim, float deltaTime );
-void DrawPlayer( Player *player, tmx_map *map );
+void UpdatePlayer( Rectangle mapRect, Camera2D *camera, Player *player, Vector2 screenDim, float deltaTime );
+void DrawPlayer( Player player );
 
 #endif
