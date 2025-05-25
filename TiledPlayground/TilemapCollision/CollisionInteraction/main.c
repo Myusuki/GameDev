@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <tmx.h>
 #include "include/mapRender.h"
+#include "include/quadtree.h"
 #include "include/player.h"
 
 int main(void)
@@ -34,6 +35,9 @@ int main(void)
   Camera2D camera = { .target = player.position,
                       .offset = (Vector2){ (windowWidth / 2.0f), (windowHeight / 2.0f) },
                       .rotation = 0.0f, .zoom = 5.0f };
+
+	TreeNode rootNode;
+	InitQuadTree(&rootNode, map);
 
   while( !WindowShouldClose() )
   {
