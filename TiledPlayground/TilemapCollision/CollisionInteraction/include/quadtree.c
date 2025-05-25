@@ -16,11 +16,11 @@ void InitQuadTree( TreeNode *rootNode, tmx_map *map )
 
 	// check tile types
 	tmx_layer *layer = map->ly_head;
-	while( layer->type == L_LAYER )
+	while( layer != NULL && layer->type == L_LAYER )
 	{
 		for( int row = 0; row < map->height; row++ )
 		{
-			for( int column; column < map->width; column++ )
+			for( int column = 0; column < map->width; column++ )
 			{
 				unsigned int gid = ( layer->content.gids[ (column * map->width) + row] ) & TMX_FLIP_BITS_REMOVAL;
 				tmx_tile *targetTile = map->tiles[gid];
@@ -33,6 +33,7 @@ void InitQuadTree( TreeNode *rootNode, tmx_map *map )
 				}
 			}
 		}
+		layer = layer->next;
 	}
 }
 void InitTreeNode( tmx_map *map, TreeNode *node, Rectangle boundedArea )
@@ -72,7 +73,7 @@ void SplitTreeNode( TreeNode *node )
     height2 = height1;
 
 	// init child nodes
-  for( int child; child < 4; child++ )
+  for( int child = 0; child < 4; child++ )
   {
     node->childNodes[child] = malloc( sizeof(TreeNode*) );
   }
