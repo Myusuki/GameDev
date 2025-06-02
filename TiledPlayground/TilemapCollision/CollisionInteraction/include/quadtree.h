@@ -19,5 +19,6 @@ void InitQuadTree( TreeNode *rootNode, tmx_map *map );
 void InitTreeNode( tmx_map *map, TreeNode *Node, Rectangle mapRect );
 void InsertCollisionObjs( TreeNode *node, CollisionObj *collisionObject );
 void SplitTreeNode( TreeNode *node ); // splits a quadtree node with a given node
+CollisionObj** GetCollisions( TreeNode *rootNode, CollisionObj checkSubject, CollisionObj* *collisionArr );
 
 #endif
