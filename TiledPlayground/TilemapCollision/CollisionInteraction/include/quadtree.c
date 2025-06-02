@@ -7,6 +7,8 @@
 #include "collisionObject.h"
 
 void InsertRectangleCollision( TreeNode *node, CollisionObj *rectCollision );
+CollisionObj** GetCollisionsRect( TreeNode *node, CollisionObj checkSubject, CollisionObj* *collisionArr );
+TreeNode* SearchForNode( TreeNode *rootNode, Vector2 checkSubject );
 
 void InitQuadTree( TreeNode *rootNode, tmx_map *map )
 {
@@ -118,16 +120,16 @@ void InsertRectangleCollision( TreeNode *node, CollisionObj *rectCollision )
 		return;
 	}
 	// check if node is split already
-	if( node->split == true )
+	if( node->split )
 	{
 		// recurse to respective child node(s)
 		for( int childNode = 0; childNode < 4; childNode++ )
 		{
 			bool xPosCheck, yPosCheck, wPosCheck, hPosCheck;
-			xPosCheck = rectCollision->collisionShape.rect.x > node->childNodes[childNode]->nodeArea.x && rectCollision->collisionShape.rect.x < node->childNodes[childNode]->nodeArea.width;
-			yPosCheck = rectCollision->collisionShape.rect.y > node->childNodes[childNode]->nodeArea.y && rectCollision->collisionShape.rect.y < node->childNodes[childNode]->nodeArea.height;
-			wPosCheck = ( rectCollision->collisionShape.rect.x + rectCollision->collisionShape.rect.width ) > node->childNodes[childNode]->nodeArea.x && ( rectCollision->collisionShape.rect.x + rectCollision->collisionShape.rect.width ) < node->childNodes[childNode]->nodeArea.width;
-			hPosCheck = ( rectCollision->collisionShape.rect.y + rectCollision->collisionShape.rect.height ) > node->childNodes[childNode]->nodeArea.y && ( rectCollision->collisionShape.rect.y + rectCollision->collisionShape.rect.height ) < node->childNodes[childNode]->nodeArea.height;
+			xPosCheck = rectCollision->collisionShape.rect.x >= node->childNodes[childNode]->nodeArea.x && rectCollision->collisionShape.rect.x <= node->childNodes[childNode]->nodeArea.width;
+			yPosCheck = rectCollision->collisionShape.rect.y >= node->childNodes[childNode]->nodeArea.y && rectCollision->collisionShape.rect.y <= node->childNodes[childNode]->nodeArea.height;
+			wPosCheck = ( rectCollision->collisionShape.rect.x + rectCollision->collisionShape.rect.width ) >= node->childNodes[childNode]->nodeArea.x && ( rectCollision->collisionShape.rect.x + rectCollision->collisionShape.rect.width ) <= node->childNodes[childNode]->nodeArea.width;
+			hPosCheck = ( rectCollision->collisionShape.rect.y + rectCollision->collisionShape.rect.height ) >= node->childNodes[childNode]->nodeArea.y && ( rectCollision->collisionShape.rect.y + rectCollision->collisionShape.rect.height ) <= node->childNodes[childNode]->nodeArea.height;
 
 			// if whole rect is within a child node
 			if( xPosCheck && yPosCheck && wPosCheck && hPosCheck )
@@ -184,4 +186,129 @@ void InsertRectangleCollision( TreeNode *node, CollisionObj *rectCollision )
 			}
 			break;
 	}
+}
+
+CollisionObj** GetCollisions( TreeNode *rootNode, CollisionObj checkSubject, CollisionObj* *collisionArr )
+{
+	if( rootNode == NULL )
+	{
+		printf( "Node is null\n" );
+		return NULL;
+	}
+
+	if( collisionArr == NULL )
+	{
+		printf( "Failed to malloc!\n" );
+		return NULL;
+	}
+
+	switch( checkSubject.shape )
+	{
+		case Rect:
+			collisionArr = GetCollisionsRect(rootNode, checkSubject, collisionArr);
+	}
+
+	return collisionArr;
+}
+CollisionObj** GetCollisionsRect( TreeNode *node, CollisionObj checkSubject, CollisionObj* *collisionArr )
+{
+	Vector2 ulPoint, urPoint, blPoint, brPoint;
+	ulPoint = (Vector2){ .x = checkSubject.collisionShape.rect.x, .y = checkSubject.collisionShape.rect.y };
+	urPoint = (Vector2){ .x = checkSubject.collisionShape.rect.x + checkSubject.collisionShape.rect.width, .y = checkSubject.collisionShape.rect.y };
+	blPoint = (Vector2){ .x = checkSubject.collisionShape.rect.x, .y = checkSubject.collisionShape.rect.y + checkSubject.collisionShape.rect.height };
+	brPoint = (Vector2){ .x = checkSubject.collisionShape.rect.x + checkSubject.collisionShape.rect.width, .y = checkSubject.collisionShape.rect.y + checkSubject.collisionShape.rect.height };
+
+	TreeNode* benchedNodes[4];
+	benchedNodes[0] = SearchForNode(node, ulPoint);
+	benchedNodes[1] = SearchForNode(node, urPoint);
+	benchedNodes[2] = SearchForNode(node, blPoint);
+	benchedNodes[3] = SearchForNode(node, brPoint);
+
+	TreeNode* *actualNodes = calloc(4, sizeof(TreeNode*) );
+	for( int checkNode = 0; checkNode < 4; checkNode++ )
+	{
+		if( benchedNodes[checkNode] == NULL )
+			continue;
+		else
+		{
+			actualNodes[0] = benchedNodes[checkNode];
+			break;
+		}
+	}
+	int amountOfActualNodes = 1;
+
+	for( int checkNode1 = 0; checkNode1 < 4; checkNode1++ )
+	{
+		if( actualNodes[checkNode1] == NULL )
+			continue;
+		for( int checkNode2 = 0; checkNode2 < 4; checkNode2++ )
+		{
+			if( benchedNodes[checkNode2] == NULL )
+				continue;
+			Rectangle checkRect1 = actualNodes[checkNode1]->nodeArea;
+			Rectangle checkRect2 = benchedNodes[checkNode2]->nodeArea;
+			if( (checkRect1.x != checkRect2.x) || (checkRect1.y != checkRect2.y) 
+					|| (checkRect1.width != checkRect2.width) || (checkRect1.height != checkRect2.height) )
+			{
+				actualNodes[amountOfActualNodes] = benchedNodes[checkNode2];
+				amountOfActualNodes++;
+			}
+		}
+	}
+
+	int amountOfCollisions = 0;
+	for( int checkNode = 0; checkNode < 4; checkNode++ )
+	{
+		if( actualNodes[checkNode] == NULL )
+			continue;
+		switch( checkSubject.collisionType )
+		{
+			case WALL:
+			{
+				CollisionObjNode *listNode = actualNodes[checkNode]->wallListHead;
+				while( listNode != NULL )
+				{
+					bool alreadyExists = false;
+					for( int collObj = 0; collObj < amountOfCollisions; collObj++ )
+					{
+						if( listNode->object->shape == collisionArr[collObj]->shape &&
+								listNode->object->collisionType == collisionArr[collObj]->collisionType &&
+								listNode->object->collisionShape.rect.x == collisionArr[collObj]->collisionShape.rect.x &&
+								listNode->object->collisionShape.rect.y == collisionArr[collObj]->collisionShape.rect.y &&
+								listNode->object->collisionShape.rect.width == collisionArr[collObj]->collisionShape.rect.width &&
+								listNode->object->collisionShape.rect.height == collisionArr[collObj]->collisionShape.rect.height )
+							alreadyExists = true;
+					}
+					if( !alreadyExists )
+					{
+						collisionArr[amountOfCollisions] = listNode->object;
+						amountOfCollisions++;
+					}
+					listNode = listNode->next;
+				}
+			}
+		}
+	}
+	return collisionArr;
+}
+TreeNode* SearchForNode( TreeNode *rootNode, Vector2 checkSubject )
+{
+	if( rootNode == NULL )
+	{
+		printf( "Node is null\n" );
+		return NULL;
+	}
+	TreeNode *foundNode = rootNode;
+	if( foundNode->split )
+	{
+		for( int childNode = 0; childNode < 4; childNode++ )
+		{
+			bool xPosCheck, yPosCheck;
+			xPosCheck = checkSubject.x >= foundNode->childNodes[childNode]->nodeArea.x && checkSubject.x <= foundNode->childNodes[childNode]->nodeArea.width;
+			yPosCheck = checkSubject.y >= foundNode->childNodes[childNode]->nodeArea.y && checkSubject.y <= foundNode->childNodes[childNode]->nodeArea.height;
+			if( xPosCheck && yPosCheck )
+				foundNode = SearchForNode(foundNode->childNodes[childNode], checkSubject);
+		}
+	}
+	return foundNode;
 }
