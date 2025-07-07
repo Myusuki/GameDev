@@ -60,7 +60,6 @@ Test
 raylib-5.5
 tmx_1.10.0
 tmx-tmx_1.10.0
-core.[0-9]*
 *.zip
 *.tar.gz
 RaylibPlayground/4thAnniversary/Anniversary
